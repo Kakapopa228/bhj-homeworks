@@ -4,6 +4,7 @@ class Game {
     this.wordElement = container.querySelector('.word');
     this.winsElement = container.querySelector('.status__wins');
     this.lossElement = container.querySelector('.status__loss');
+    this.game = container.querySelector('#game')
 
     this.reset();
 
@@ -17,23 +18,44 @@ class Game {
   }
 
   registerEvents() {
-    /*
-      TODO:
-      Написать обработчик события, который откликается
-      на каждый введённый символ.
-      В случае правильного ввода слова вызываем this.success()
-      При неправильном вводе символа - this.fail();
-      DOM-элемент текущего символа находится в свойстве this.currentSymbol.
-     */
+    const keyUp = (e) => {
+      const currentSymbol = document.querySelector('.symbol_current');
+      this.currentSymbol = currentSymbol;
+      if (this.currentSymbol.textContent === e.key) {
+        this.success();
+        currentSymbol.classList.remove('symbol_current');
+        if (currentSymbol.nextElementSibling === null) {
+          return
+        } else {
+          currentSymbol.nextElementSibling.classList.add('symbol_current');
+        }
+      } else {
+          this.fail();
+      }
+    }
+    window.addEventListener('keyup', keyUp);
+  }
+
+  countdownTimer() {
+    const symbol = document.querySelectorAll('.symbol');
+    const symbolArray = Array.from(symbol); 
+    let timer = symbolArray.length;
+    const countdown = setInterval(() => {
+      document.querySelector('.timer').textContent = timer;
+      timer--;
+      if (timer < 0 && (symbolArray.some(el => el.classList.contains('symbol_correct')) || symbolArray.every(el => !el.classList.contains('symbol_correct')))) {
+        this.fail();
+        clearInterval(countdown);
+      } if (symbolArray.every(el => el.classList.contains('symbol_correct'))) {
+        clearInterval(countdown);
+      }
+    }, 1000);
   }
 
   success() {
-    if(this.currentSymbol.classList.contains("symbol_current")) this.currentSymbol.classList.remove("symbol_current");
     this.currentSymbol.classList.add('symbol_correct');
     this.currentSymbol = this.currentSymbol.nextElementSibling;
-
     if (this.currentSymbol !== null) {
-      this.currentSymbol.classList.add('symbol_current');
       return;
     }
 
@@ -42,6 +64,7 @@ class Game {
       this.reset();
     }
     this.setNewWord();
+    this.countdownTimer();
   }
 
   fail() {
@@ -50,28 +73,29 @@ class Game {
       this.reset();
     }
     this.setNewWord();
+    // this.countdownTimer();
   }
 
   setNewWord() {
     const word = this.getWord();
-
     this.renderWord(word);
+    this.countdownTimer();
   }
 
   getWord() {
     const words = [
-        'bob',
-        'awesome',
-        'netology',
-        'hello',
-        'kitty',
-        'rock',
-        'youtube',
-        'popcorn',
-        'cinema',
-        'love',
-        'javascript'
-      ],
+      'bob',
+      'awesome',
+      'netology',
+      'hello',
+      'kitty',
+      'rock',
+      'youtube',
+      'popcorn',
+      'cinema',
+      'love',
+      'javascript'
+    ],
       index = Math.floor(Math.random() * words.length);
 
     return words[index];
@@ -81,7 +105,7 @@ class Game {
     const html = [...word]
       .map(
         (s, i) =>
-          `<span class="symbol ${i === 0 ? 'symbol_current': ''}">${s}</span>`
+          `<span class="symbol ${i === 0 ? 'symbol_current' : ''}">${s}</span>`
       )
       .join('');
     this.wordElement.innerHTML = html;
@@ -90,5 +114,4 @@ class Game {
   }
 }
 
-new Game(document.getElementById('game'))
-
+new Game(document.getElementById('game'));
