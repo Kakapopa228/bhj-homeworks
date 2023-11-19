@@ -3,6 +3,7 @@ const productAdd = Array.from(document.querySelectorAll('.product__add'));
 const cart = document.querySelector('.cart');
 const prodPlus = Array.from(document.querySelectorAll('.product__quantity-control_inc'));
 const prodMinus = Array.from(document.querySelectorAll('.product__quantity-control_dec'));
+const cartProducts = document.querySelector('.cart__products');
 
 product.forEach(el => el.addEventListener('click', function (e) {
     const target = e.target;
@@ -26,7 +27,7 @@ product.forEach(el => el.addEventListener('click', function (e) {
     })
 
     const insertProd = id => {
-        cart.insertAdjacentHTML("beforeEnd",
+			cartProducts.insertAdjacentHTML("beforeEnd",
             `<div class="cart__products">
                 <div class="cart__product" data-id=${id}>
                     <img class="cart__product-image" src=${src}>
@@ -39,7 +40,7 @@ product.forEach(el => el.addEventListener('click', function (e) {
         const cartProd = Array.from(cart.querySelectorAll('.cart__product'));
         const cartProdId = cartProd.map(item => item.dataset.id);
 
-        if (target === i && ((cartProd.length === 0) || (cartProd.length !== 0 && cartProdId.indexOf(id) === -1))) {
+        if (target === i && ((cartProd.length === 0) || (cartProducts.length !== 0 && cartProdId.indexOf(id) === -1))) {
             insertProd(id);
         } if (target === i && cartProdId.indexOf(id) !== -1) {
             cartProd.forEach(prod => {
@@ -53,3 +54,45 @@ product.forEach(el => el.addEventListener('click', function (e) {
         }
     })
 }))
+
+
+
+
+
+
+
+// let quantity = document.getElementsByClassName('product__quantity-value');
+// let productAdd = document.getElementsByClassName('product__add');
+// let cartProducts = document.querySelector('.cart__products');
+// let product = document.getElementsByClassName('product');
+// let prodPlus = document.getElementsByClassName('product__quantity-control_inc');
+// let prodMinus = document.getElementsByClassName('product__quantity-control_dec');
+
+// for (let index = 0; index < quantity.length; index++) {
+// 	prodPlus[index].addEventListener('click', () => {
+//     quantity[index].textContent++;
+//   })
+
+//   prodMinus[index].addEventListener('click', () => {
+//     quantity[index].textContent--;
+
+//     if (quantity[index].textContent < '1') {
+//       quantity[index].textContent = '1'
+//     }
+//   });
+
+//   productAdd[index].addEventListener('click', () => {
+//   	for (let i = 0; i < cartProducts.children.length; i++) {
+//       if (cartProducts.children[i].dataset.id === product[index].dataset.id) {
+//         return cartProducts.children[i].querySelector('.cart__product-count').textContent = Number(cartProducts.children[i].querySelector('.cart__product-count').textContent) + Number(quantity[i].textContent);
+//       }
+//     }
+
+//   cartProducts.insertAdjacentHTML('beforeend', `
+//     <div class="cart__product" data-id="${product[index].dataset.id}">
+//       <img class="cart__product-image" src="${product[index].querySelector('img').getAttribute('src')}">
+//       <div class="cart__product-count">${quantity[index].textContent}</div>
+//     </div>
+//   	`);
+//   });
+// }
